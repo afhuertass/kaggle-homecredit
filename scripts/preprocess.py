@@ -284,5 +284,7 @@ features, feature_names = ft.dfs(entityset = entity_train, target_entity = 'prev
 print( features.head() )
 print( features.shape )
 
+features.to_csv("../data/new_prevs.csv" )
+
 
 

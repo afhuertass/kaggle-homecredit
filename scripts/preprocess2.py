@@ -252,7 +252,7 @@ variable_types_instal = {
 
 entity_train = ft.EntitySet( id = "train" )
 entity_train = entity_train.entity_from_dataframe(
-entity_id = "bureau" , dataframe = df_bureau , make_index = True , index ="SK_ID_BUREAU" , variable_types = variable_types_bureau
+entity_id = "bureau" , dataframe = df_bureau  , index ="SK_ID_BUREAU" , variable_types = variable_types_bureau
 )
 
 entity_train = entity_train.entity_from_dataframe(

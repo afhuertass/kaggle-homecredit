@@ -252,10 +252,10 @@ entity_id = "train" , dataframe = df_train  , index ="SK_ID_CURR" , variable_typ
 )
 
 entity_train = entity_train.entity_from_dataframe(
-entity_id = "bureau" , dataframe = df_bureau  ,  make_index = True  )
+entity_id = "bureau" , dataframe = df_bureau  ,  make_index = True , index = "bureau_indx"  )
 
 entity_train = entity_train.entity_from_dataframe(
-entity_id = "prev" , dataframe = df_prev  ,  make_index = True  )
+entity_id = "prev" , dataframe = df_prev  ,  make_index = True , index = "prev_indx" )
 
 print("Adding relationships")
 r_1 = ft.Relationship( entity_train["train"]["SK_ID_CURR"] , entity_train["bureau"]["SK_ID_CURR"] )

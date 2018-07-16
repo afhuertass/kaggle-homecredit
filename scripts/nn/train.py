@@ -44,7 +44,7 @@ keras.metrics.auc = auc_roc
 def train():
 
 	# create dataset
-	dataGenerator = DataGenerator( "../../data/train_new.csv" , "../../data/labels_train.csv" , batch_size )
+	dataGenerator = DataGenerator( "../../data/train_dae.csv" , "../../data/labels_train.csv" , batch_size )
 	features_input = dataGenerator.getNFeatures()
 	steps_per_epoch  = dataGenerator.getSteps()
 	#generator = dataGenerator.generate()
@@ -71,7 +71,7 @@ def predict(file = "test"):
 
 	model = load_model("./best_m")
 
-	df = pd.read_csv( "../../data/test_new.csv" )
+	df = pd.read_csv( "../../data/test_dae.csv" )
 	y_preds = []
 
 	for g, df_ in df.groupby(np.arange(len( df )) // 128 ):
@@ -91,7 +91,7 @@ def predict(file = "test"):
 	y_preds = np.array( preds )
 	#y_preds = y_preds.flatten()
 	print(" Predictng test - from dae ")
-	pd.DataFrame( { "index": np.arange( y_preds.shape[0] ) , 'preds': y_preds }).to_csv("../../data/preds_nn.csv")
+	pd.DataFrame( { "index": np.arange( y_preds.shape[0] ) , 'preds': y_preds }).to_csv("../../data/preds_nn_16.csv")
 
 
 if __name__ =="__main__":

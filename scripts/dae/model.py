@@ -17,6 +17,9 @@ def get_model( input_features , nhidden ):
 	model.add( Activation("relu" , name = "l2")  )
 	model.add ( Dropout( 0.2 ) )
 
+	model.add(Dense(nhidden))
+	model.add( Activation("relu" , name = "l3")  )
+	model.add ( Dropout( 0.2 ) )
 	"""
 	#model.add( BatchNormalization() )
 	model.add( Dense(nhidden ) )

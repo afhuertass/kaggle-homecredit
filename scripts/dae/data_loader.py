@@ -45,7 +45,7 @@ class DataGenerator(object):
 		# [ batch_size , nfeatures ]
 		#print("shappeee ")
 	
-		nfeatures2permute = int( 0.5* self.nfeatures )
+		nfeatures2permute = int( 0.15* self.nfeatures )
 
 
 				# 15 

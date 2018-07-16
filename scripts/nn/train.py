@@ -96,6 +96,6 @@ def predict(file = "test"):
 
 if __name__ =="__main__":
 
-	#train()
+	train()
 	#fakedata()
-	predict()
+	#predict()

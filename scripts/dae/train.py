@@ -16,7 +16,7 @@ batch_size = 128
 learning_rate = 1e-5
 
 features_input = 100 
-nhidden = 1500
+nhidden = 800
 
 def rank_gauss(x):
     # x is numpy vector
@@ -32,7 +32,7 @@ def rank_gauss(x):
 def train():
 
 	# create dataset
-	dataGenerator = DataGenerator( "../../data/train_new.csv" , batch_size )
+	dataGenerator = DataGenerator( "../../data/sparse/train_new2.csv" , batch_size )
 	features_input = dataGenerator.getNFeatures()
 	steps_per_epoch  = dataGenerator.getSteps()
 	#generator = dataGenerator.generate()
@@ -60,8 +60,8 @@ def predict(file = "train"):
 	model = load_model("./best_m")
 
 	#dataGenerator = DataGenerator("../../data/sparse/train.csv" )
-	df = pd.read_csv("../../data/{}_new.csv".format(file) )
-	layers_names = [  u"l1",u"l2"  ]
+	df = pd.read_csv("../../data/sparse/{}_new2.csv".format(file) )
+	layers_names = [  u"l2"   ]
 	inp = model.input                                           # input placeholder
 	print( [x.name for x in model.layers])
 	outputs = [layer.output for layer in model.layers  if layer.name in  layers_names ]          # all layer outputs
@@ -104,8 +104,62 @@ def predict(file = "train"):
 	df_ = pd.DataFrame( new_trainData ) #.to_csv( "../data/")
 	df_.columns = np.arange(  new_trainData.shape[1] )
 	
-	print( "Gauss ranking ")
-	df_ = df_.apply( rank_gauss )
+	#print( "Gauss ranking ")
+	#df_ = df_.apply( rank_gauss )
+	print("predict {}".format(file) )
+	print("saving")
+
+	df_.to_csv("../../data/{}_dae.csv".format(file) , index = False  )
+	print( df_.head() )
+	return "" 
+
+
+def predictAVG(file = "train"):
+
+
+	model = load_model("./best_m")
+
+	#dataGenerator = DataGenerator("../../data/sparse/train.csv" )
+	df = pd.read_csv("../../data/sparse/{}_new2.csv".format(file) )
+	layers_names = [  u"l2" , "l1" , "l3"   ]
+	inp = model.input                                           # input placeholder
+	print( [x.name for x in model.layers])
+	outputs = [layer.output for layer in model.layers  if layer.name in  layers_names ]          # all layer outputs
+	functor = K.function([inp]+ [K.learning_phase()], outputs ) # evaluation function
+
+	# Testing
+	#test = np.random.random(input_shape)[np.newaxis,...]
+
+
+	X =  df.values[:100]
+	outputs_all = []
+	i = 1 
+	for g, df_ in df.groupby(np.arange(len( df )) // 128 ):
+		
+		layer_outs = functor([  df_.values , 1.])
+		shape = df_.shape[0]
+		outputs = np.array ( layer_outs   )
+
+		#outputs = outputs.reshape( (  shape , -1 ))
+
+		outputs = outputs.mean( axis = 0 ) 
+
+		print("asdadadasdasdas")
+		print( outputs.shape )
+		print( i*128 )
+		i = i + 1 
+		outputs_all.append( outputs  )
+
+
+	new_trainData = np.vstack( outputs_all )
+	print( new_trainData.shape )
+
+	np.save("../../data/{}_dae.csv".format(file) , new_trainData )
+	df_ = pd.DataFrame( new_trainData ) #.to_csv( "../data/")
+	df_.columns = np.arange(  new_trainData.shape[1] )
+	
+	#print( "Gauss ranking ")
+	#df_ = df_.apply( rank_gauss )
 	print("predict {}".format(file) )
 	print("saving")
 
@@ -117,4 +171,5 @@ if __name__ =="__main__":
 
 	#train()
 	#fakedata()
-	predict("train")
+	#predict("test")
+	predictAVG("train")

@@ -37,7 +37,7 @@ class DataGenerator(object):
 
 	def sample_data( self  ):
 
-		d = self.data.sample( self.batch_size , random_state = random_state )
+		d = self.data.sample( self.batch_size , random_state = random_state , replace = True )
 
 		x = d.copy().values
 		y = d.copy().values 
@@ -46,14 +46,14 @@ class DataGenerator(object):
 		#print("shappeee ")
 	
 		nfeatures2permute = int( 0.15* self.nfeatures )
-
+		#print( x.shape )
 
 				# 15 
 		col2replace = np.random.choice( self.nfeatures , nfeatures2permute )
-		noise = self.data.sample( self.batch_size , random_state = random_state ).values
+		noise = self.data.sample( self.batch_size , random_state = 2*random_state  ).values
 		#print( noise.shape )
 		#print( x.shape )
-		x[: , col2replace  ] = noise[ : , col2replace ]
+		x[: , col2replace   ] = noise[ : , col2replace ]
 		# lista de 
 		#rows2select = np.random.choice( self.nfeatures , nfeatures2permute ) 
 

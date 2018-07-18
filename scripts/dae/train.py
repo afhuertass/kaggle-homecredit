@@ -169,7 +169,7 @@ def predictAVG(file = "train"):
 
 if __name__ =="__main__":
 
-	#train()
+	train()
 	#fakedata()
 	#predict("test")
-	predictAVG("train")
+	#predictAVG("train")

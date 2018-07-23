@@ -13,28 +13,40 @@ def get_model( input_features , nhidden ):
 	model.add( Activation("relu"  , name = "l1")  )
 	model.add ( Dropout( 0.2 ) )
 	#model.add( BatchNormalization() )
-	model.add(Dense(nhidden))
+
+	#Encoder part
+	model.add(Dense(512))
 	model.add( Activation("relu" , name = "l2")  )
 	model.add ( Dropout( 0.2 ) )
 
-	model.add(Dense(nhidden))
+	model.add(Dense( 256 ))
 	model.add( Activation("relu" , name = "l3")  )
 	model.add ( Dropout( 0.2 ) )
-	"""
-	#model.add( BatchNormalization() )
-	model.add( Dense(nhidden ) )
-	model.add(Activation("relu" , name = "l3") )
+
+	model.add(Dense( 128 ))
+	model.add( Activation("relu" , name = "l4")  )
 	model.add ( Dropout( 0.2 ) )
 
-	#model.add( BatchNormalization() )
-	model.add( Dense( nhidden ) )
-	model.add(Activation("relu" , name = "l4") )
-	model.add ( Dropout( 0.1 ) )
-	"""
+	model.add(Dense( 64 ))
+	model.add( Activation("relu" , name = "l5")  )
+	model.add ( Dropout( 0.2 ) )
 
-	#model.add( BatchNormalization() )
+	# Begin the decoder parte 
+	model.add(Dense( 128 ))
+	model.add( Activation("relu" , name = "l6")  )
+	model.add ( Dropout( 0.2 ) )
+
+	model.add(Dense( 256 ))
+	model.add( Activation("relu" , name = "l7")  )
+	model.add ( Dropout( 0.2 ) )
+
+	model.add(Dense( 512 ))
+	model.add( Activation("relu" , name = "l8")  )
+	model.add ( Dropout( 0.2 ) )
+
+	# output layer
 	model.add( Dense( input_features , name = "linear" ) )
-	#model.add( Activation("relu" ,  name = "l4")  )
+	model.add( Activation("linear" ,  name = "l4")  )
 	#model.add ( Dropout( 0.3 ) )
 
 	return model 

@@ -72,30 +72,27 @@ def predict(file = "test"):
 	model = load_model("./best_m")
 
 	df = pd.read_csv( "../../data/test_dae.csv" )
+	ids = pd.read_csv("../../data/ids_test.csv" , header= None)[1].values
 	y_preds = []
 
 	for g, df_ in df.groupby(np.arange(len( df )) // 128 ):
 
 		y_s = model.predict( df_.values  )
-		y_s = y_s.reshape( (1 , -1 ) ).flatten()
-		print( y_s.shape )
+		
 		y_preds.append(   y_s )
 
-	preds = []
-	for b in y_preds:
-		for x in b:
-			preds.append( x )
+	preds = np.vstack( y_preds ).flatten()
 
 
+	print(preds.shape)
 
-	y_preds = np.array( preds )
 	#y_preds = y_preds.flatten()
 	print(" Predictng test - from dae ")
-	pd.DataFrame( { "index": np.arange( y_preds.shape[0] ) , 'preds': y_preds }).to_csv("../../data/preds_nn_16.csv")
+	pd.DataFrame( { "SK_ID_CURR":  ids , 'TARGET': preds }).to_csv("../../data/preds_nn_16.csv" , index = False )
 
 
 if __name__ =="__main__":
 
-	train()
+	#train()
 	#fakedata()
-	#predict()
+	predict()

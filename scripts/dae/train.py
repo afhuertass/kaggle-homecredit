@@ -11,9 +11,9 @@ from keras import backend as K
 from scipy.special import erfinv
 import model
 
-NEPOCHS = 10000
+NEPOCHS = 1000
 batch_size = 128
-learning_rate = 1e-5
+learning_rate = 0.003
 
 features_input = 100 
 nhidden = 800
@@ -39,10 +39,9 @@ def train():
 
 	m = model.get_model(features_input , nhidden)
 	decay_rate =  learning_rate / NEPOCHS 
-	optimizer = optimizers.Adam(lr = learning_rate , decay = decay_rate  )
+	optimizer = optimizers.SGD(lr = learning_rate , decay = 1-0.995  )
 
-	callbacks = [EarlyStopping(monitor='val_loss', patience=5),
-             ModelCheckpoint(filepath= "./best_m", monitor='val_loss', save_best_only=True)]
+	callbacks = [ ModelCheckpoint(filepath= "./best_m", monitor='val_loss', save_best_only=True)]
 
 	m.compile( loss = "mean_squared_error"  , optimizer = optimizer , metrics = ["mse"] )
 
@@ -61,7 +60,7 @@ def predict(file = "train"):
 
 	#dataGenerator = DataGenerator("../../data/sparse/train.csv" )
 	df = pd.read_csv("../../data/sparse/{}_new2.csv".format(file) )
-	layers_names = [  u"l2"   ]
+	layers_names = [   "l1"   ]
 	inp = model.input                                           # input placeholder
 	print( [x.name for x in model.layers])
 	outputs = [layer.output for layer in model.layers  if layer.name in  layers_names ]          # all layer outputs
@@ -77,12 +76,18 @@ def predict(file = "train"):
 	for g, df_ in df.groupby(np.arange(len( df )) // 128 ):
 		
 		layer_outs = functor([  df_.values , 1.])
+
 		shape = df_.shape[0]
-		outputs = np.array ( layer_outs   )
+
+		feats = np.hstack( layer_outs )
+		#print(feats.shape)
+		#return 
+		#outputs = np.array ( layer_outs   )
 
 		#outputs = outputs.reshape( (  shape , -1 ))
+		"""
 		elems = []
-		for elem in range(0,outputs.shape[1] ):
+		for elem in range(0, len(layer_outs) ):
 			feats = []
 			for j in range(0,  len(layers_names) ) :
 				d = outputs[ j , elem , :  ] 
@@ -94,7 +99,8 @@ def predict(file = "train"):
 		print( elems.shape )
 		print( i*128 )
 		i = i + 1 
-		outputs_all.append( elems )
+		"""
+		outputs_all.append( feats )
 
 
 	new_trainData = np.vstack( outputs_all )
@@ -121,7 +127,7 @@ def predictAVG(file = "train"):
 
 	#dataGenerator = DataGenerator("../../data/sparse/train.csv" )
 	df = pd.read_csv("../../data/sparse/{}_new2.csv".format(file) )
-	layers_names = [  u"l2" , "l1" , "l3"   ]
+	layers_names = [  u"l1" , "l2" , "l3" , "l4" , "l5"   ]
 	inp = model.input                                           # input placeholder
 	print( [x.name for x in model.layers])
 	outputs = [layer.output for layer in model.layers  if layer.name in  layers_names ]          # all layer outputs
@@ -171,5 +177,6 @@ if __name__ =="__main__":
 
 	train()
 	#fakedata()
-	#predict("test")
+	predict("train")
+	predict("test")
 	#predictAVG("train")

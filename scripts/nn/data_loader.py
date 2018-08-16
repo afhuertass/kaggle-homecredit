@@ -21,6 +21,7 @@ class DataGenerator(object):
 		self.nsamples = self.data.shape[ 0 ]
 		self.nfeatures = self.data.shape[ 1 ]
 
+	
 
 	def generate( self ):
 
@@ -54,7 +55,7 @@ class DataGenerator(object):
 		#print( x.shape )
 		#print( y.shape )
 
-		return x ,y 
+		return x ,y.reshape( -1 , 1 ) 
 
 
 
